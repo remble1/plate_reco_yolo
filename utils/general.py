@@ -325,8 +325,8 @@ def check_img_size(imgsz, s=32, floor=0):
 def check_imshow():
     # Check if environment supports image displays
     try:
-        assert not is_docker(), 'cv2.imshow() is disabled in Docker environments'
-        assert not is_colab(), 'cv2.imshow() is disabled in Google Colab environments'
+        # assert not is_docker(), 'cv2.imshow() is disabled in Docker environments'
+        # assert not is_colab(), 'cv2.imshow() is disabled in Google Colab environments'
         cv2.imshow('test', np.zeros((1, 1, 3)))
         cv2.waitKey(1)
         cv2.destroyAllWindows()
