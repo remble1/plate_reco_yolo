@@ -50,7 +50,7 @@ from utils.torch_utils import select_device, time_sync
 
 @torch.no_grad()
 def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s) "D:\last.pt" yolov5x.pt
-        source= r"D:\studia\praca_dyplomowa\pytorch_detect\yolov5\dane_pomiarowe\dane_kontrolne_101",  # file/dir/URL/glob, 0 for webcam
+        source= r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_101",  # file/dir/URL/glob, 0 for webcam
         data='data/coco128.yaml',  # dataset.yaml path
         imgsz=(800, 800),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
@@ -192,8 +192,8 @@ def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s
                             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
                 # regulowanie wspolczynnikow max rozmiaru znaku i minimalnego
-                max_symbol_width = plate_width * 0.13
-                min_symbol_width = max_symbol_width * 0.4
+                max_symbol_width = plate_width * 0.16
+                min_symbol_width = max_symbol_width * 0.2
                 # print("szerokosc tablicy", plate_width)
                 # print("max szerokosc znaku", max_symbol_width)
                 # print("min szerokosc znaku", min_symbol_width)

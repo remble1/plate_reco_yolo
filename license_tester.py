@@ -1,9 +1,11 @@
 from detect import run
 import os
 
-list = os.listdir(rf"D:\studia\praca_dyplomowa\pytorch_detect\yolov5\dane_pomiarowe\dane_kontrolne_101") # dir is your directory path
+plate_dir = r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1000"
 
-plates=run() #yolo engine
+list = os.listdir(plate_dir) # dir is your directory path
+
+plates=run(source= plate_dir) #yolo engine
 
 points = 0
 pic = len(list)
@@ -13,9 +15,12 @@ for plate in plates:
     
     if plate_name == predict_plate:
         points += 1
-        print(f"Nazwa pliku:         {plate_name}     Odczytana wartość:       {predict_plate}  ----------------------- zgadza się")
+        print(f"Nazwa pliku:         {plate_name}     Odczytana wartość:       {predict_plate} ")
+
+
+
     else:
-        print(f"Nazwa pliku:         {plate_name}     Odczytana wartość:       {predict_plate}")
+        print(f"Nazwa pliku:         {plate_name}     Odczytana wartość:       {predict_plate} ------ bad")
         # print(f"Dobre rozpoznanie numer {points}")
 
 print(f"Rozpoznano poprawnie {points} na {pic}")
