@@ -1,28 +1,4 @@
 # YOLOv5 🚀 by Ultralytics, GPL-3.0 license
-"""
-Run inference on images, videos, directories, streams, etc.
-
-Usage - sources:
-    $ python path/to/detect.py --weights yolov5s.pt --source 0              # webcam
-                                                             img.jpg        # image
-                                                             vid.mp4        # video
-                                                             path/          # directory
-                                                             path/*.jpg     # glob
-                                                             'https://youtu.be/Zgi9g1ksQHc'  # YouTube
-                                                             'rtsp://example.com/media.mp4'  # RTSP, RTMP, HTTP stream
-
-Usage - formats:
-    $ python path/to/detect.py --weights yolov5s.pt                 # PyTorch
-                                         yolov5s.torchscript        # TorchScript
-                                         yolov5s.onnx               # ONNX Runtime or OpenCV DNN with --dnn
-                                         yolov5s.xml                # OpenVINO
-                                         yolov5s.engine             # TensorRT
-                                         yolov5s.mlmodel            # CoreML (MacOS-only)
-                                         yolov5s_saved_model        # TensorFlow SavedModel
-                                         yolov5s.pb                 # TensorFlow GraphDef
-                                         yolov5s.tflite             # TensorFlow Lite
-                                         yolov5s_edgetpu.tflite     # TensorFlow Edge TPU
-"""
 
 import argparse
 import os
@@ -60,7 +36,7 @@ def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s
         view_img=False,  # show results
         save_txt=True,  # save results to *.txt
         save_conf=False,  # save confidences in --save-txt labels
-        save_crop=False,  # save cropped prediction boxes
+        save_crop=True,  # save cropped prediction boxes
         nosave=False,  # do not save images/videos
         classes=None,  # filter by class: --class 0, or --class 0 2 3
         agnostic_nms=False,  # class-agnostic NMS
@@ -171,11 +147,15 @@ def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s
                         c = int(cls)
                         # print(f"Test boxa {xywh} klasa {names[c]} pewność {conf}")
 
-                        if names[c] == "LP":
-                            plate_width = xywh[2]
-                            continue
-                        else:
-                            single_plate.append([xywh[0], names[c], xywh[2]]) #lapiemy z silnika x, nazwe i szerokosc
+                        # if names[c] == "LP":
+
+                        #     plate_width_x = xywh[0]
+                        #     plate_width_y = xywh[1]
+                        #     plate_width_w = xywh[2]
+                        #     plate_width_h = xywh[3]
+                        #     continue
+                        # else:
+                        #     single_plate.append([xywh[0], names[c], xywh[2]]) #lapiemy z silnika x, nazwe i szerokosc
                         # if xywh[0] < symbol_widgt:
 
 
@@ -194,14 +174,11 @@ def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s
                 # regulowanie wspolczynnikow max rozmiaru znaku i minimalnego
                 max_symbol_width = plate_width * 0.16
                 min_symbol_width = max_symbol_width * 0.2
-                # print("szerokosc tablicy", plate_width)
-                # print("max szerokosc znaku", max_symbol_width)
-                # print("min szerokosc znaku", min_symbol_width)
-                # print("to jeest signle plate", single_plate)
 
-
+                # sortowanie symboli od lewej do prawej 
                 single_plate.sort(key=lambda x: x[0])
 
+                # dobieranie odpowiedniej grubosci kazdego symbolu
                 for sign in single_plate:
                     if sign[2] < max_symbol_width and sign[2] > min_symbol_width:
                         # print(f"litera {sign[1]} grubość {sign[2]}")
@@ -238,7 +215,7 @@ def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s
                             save_path += '.mp4'
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer[i].write(im0)
-        # print("final", final_data)
+        print("final", final_data)
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
@@ -251,7 +228,7 @@ def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s
 
 
 
-    print(final_data)
+    # print(final_data)
     return final_data
 
 

@@ -1,7 +1,7 @@
 from detect import run
 import os
 
-plate_dir = r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1000"
+plate_dir = r"D:\studia\praca_dyplomowa\pytorch_detect\yolov5\runs\detect\exp7\crops\LP"
 
 list = os.listdir(plate_dir) # dir is your directory path
 

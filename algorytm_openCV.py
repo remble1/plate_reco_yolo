@@ -8,7 +8,7 @@ pytesseract.pytesseract.tesseract_cmd = r"D:\studia\praca_dyplomowa\tesseract\te
 import glob
 import time
 
-folder_with_pic = glob.glob(r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1000\*")
+folder_with_pic = glob.glob(r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1\*")
 
 points = 0
 no_contur = 0
@@ -59,11 +59,11 @@ for file in folder_with_pic:
           
     str(data)
 
-    # cv2.imshow('1', gray)
-    # cv2.imshow('2',edged)
-    # cv2.imshow('3',new_image)
-    # cv2.imshow('4',cropped_image)
-    # cv2.waitKey(0)
+    cv2.imshow('1', gray)
+    cv2.imshow('2',edged)
+    cv2.imshow('3',new_image)
+    cv2.imshow('4',cropped_image)
+    cv2.waitKey(0)
 
     file_name = file.split("\\")
     plate = file_name[-1]
