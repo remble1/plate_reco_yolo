@@ -49,16 +49,16 @@ from utils.torch_utils import select_device, time_sync
 
 
 @torch.no_grad()
-def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
-        source= '0',  # file/dir/URL/glob, 0 for webcam
+def run(weights=r'D:\carplate_element\model_S_5Kpic\last.pt',  # model.pt path(s) "D:\last.pt" yolov5x.pt
+        source= r"D:\studia\praca_dyplomowa\pytorch_detect\yolov5\dane_pomiarowe\dane_kontrolne_101",  # file/dir/URL/glob, 0 for webcam
         data='data/coco128.yaml',  # dataset.yaml path
-        imgsz=(640, 640),  # inference size (height, width)
+        imgsz=(800, 800),  # inference size (height, width)
         conf_thres=0.25,  # confidence threshold
         iou_thres=0.45,  # NMS IOU threshold
         max_det=1000,  # maximum detections per image
-        device='',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
+        device='0',  # cuda device, i.e. 0 or 0,1,2,3 or cpu
         view_img=False,  # show results
-        save_txt=False,  # save results to *.txt
+        save_txt=True,  # save results to *.txt
         save_conf=False,  # save confidences in --save-txt labels
         save_crop=False,  # save cropped prediction boxes
         nosave=False,  # do not save images/videos
@@ -76,6 +76,7 @@ def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
         half=False,  # use FP16 half-precision inference
         dnn=False,  # use OpenCV DNN for ONNX inference
         ):
+    final_data=[]
     source = str(source)
     save_img = not nosave and not source.endswith('.txt')  # save inference images
     is_file = Path(source).suffix[1:] in (IMG_FORMATS + VID_FORMATS)
@@ -135,7 +136,7 @@ def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
 
         # Second-stage classifier (optional)
         # pred = utils.general.apply_classifier(pred, classifier_model, im, im0s)
-
+        plate_width = 0
         # Process predictions
         for i, det in enumerate(pred):  # per image
             seen += 1
@@ -162,9 +163,23 @@ def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
 
                 # Write results
+                result = []
+                single_plate = []
                 for *xyxy, conf, cls in reversed(det):
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
+                        c = int(cls)
+                        # print(f"Test boxa {xywh} klasa {names[c]} pewność {conf}")
+
+                        if names[c] == "LP":
+                            plate_width = xywh[2]
+                            continue
+                        else:
+                            single_plate.append([xywh[0], names[c], xywh[2]]) #lapiemy z silnika x, nazwe i szerokosc
+                        # if xywh[0] < symbol_widgt:
+
+
+
                         line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
                         with open(txt_path + '.txt', 'a') as f:
                             f.write(('%g ' * len(line)).rstrip() % line + '\n')
@@ -176,6 +191,26 @@ def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
                         if save_crop:
                             save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
+                # regulowanie wspolczynnikow max rozmiaru znaku i minimalnego
+                max_symbol_width = plate_width * 0.13
+                min_symbol_width = max_symbol_width * 0.4
+                # print("szerokosc tablicy", plate_width)
+                # print("max szerokosc znaku", max_symbol_width)
+                # print("min szerokosc znaku", min_symbol_width)
+                # print("to jeest signle plate", single_plate)
+
+
+                single_plate.sort(key=lambda x: x[0])
+
+                for sign in single_plate:
+                    if sign[2] < max_symbol_width and sign[2] > min_symbol_width:
+                        # print(f"litera {sign[1]} grubość {sign[2]}")
+                        result.append(sign[1])
+                    else:
+                        # print("zły znak")
+                        pass
+                # print(result)
+                final_data.append([p.stem, result])
             # Print time (inference-only)
             LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
 
@@ -203,6 +238,7 @@ def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
                             save_path += '.mp4'
                         vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                     vid_writer[i].write(im0)
+        # print("final", final_data)
 
     # Print results
     t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
@@ -212,6 +248,15 @@ def run(weights='yolov5x.pt',  # model.pt path(s) "D:\last.pt"
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
     if update:
         strip_optimizer(weights)  # update model (to fix SourceChangeWarning)
+
+
+
+    # print(final_data)
+    return final_data
+
+
+
+
 
 def main():
     check_requirements(exclude=('tensorboard', 'thop'))
