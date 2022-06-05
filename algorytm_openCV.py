@@ -8,7 +8,7 @@ pytesseract.pytesseract.tesseract_cmd = r"D:\studia\praca_dyplomowa\tesseract\te
 import glob
 import time
 
-folder_with_pic = glob.glob(r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1\*")
+folder_with_pic = glob.glob(r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1000\*")
 
 points = 0
 no_contur = 0
@@ -30,6 +30,9 @@ for file in folder_with_pic:
   contours = imutils.grab_contours(keypoints)
   contours = sorted(contours, key=cv2.contourArea, reverse=True)[:10]
 
+  # cv2.imshow('3',contours)
+  # cv2.waitKey(0)
+
   location = None
   for contour in contours:
     approx = cv2.approxPolyDP(contour, 10, True)
@@ -37,33 +40,37 @@ for file in folder_with_pic:
       location = approx 
       break 
 
+    # cv2.imshow('1', gray)
+    # cv2.imshow('2',edged)
+    # cv2.imshow('3',contours)
+    # cv2.imshow('3',new_image)
+    # cv2.imshow('4',cropped_image)
+    # cv2.waitKey(0)
+
   try:
       
     mask = np.zeros(gray.shape, np.uint8)
     new_image = cv2.drawContours(mask, [location], 0,255, -1)
     new_image = cv2.bitwise_and(img, img, mask=mask)
 
-    # cv2.imshow('3',new_image)
+    # cv2.imshow('4',new_image)
     # cv2.waitKey(0)
 
     (x,y) = np.where(mask==255)
     (x1,y1) = (np.min(x), np.min(y))
     (x2, y2) = (np.max(x), np.max(y))
 
-    cropped_image = gray[x1:x2+1, y1:y2+1]
+    cropped_image = img[x1:x2+1, y1:y2+1]
 
-    # cv2.imshow('3',cropped_image)
-    # cv2.waitKey(0)
+    cv2.imshow('1', gray)
+    cv2.imshow('5',cropped_image)
+    cv2.waitKey(0)
 
-    data = pytesseract.image_to_string(cropped_image, config='-c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 --psm 8 --oem 3')
+    data = pytesseract.image_to_string(cropped_image, config='-c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 --psm 8 --oem 1')
           
     str(data)
 
-    cv2.imshow('1', gray)
-    cv2.imshow('2',edged)
-    cv2.imshow('3',new_image)
-    cv2.imshow('4',cropped_image)
-    cv2.waitKey(0)
+
 
     file_name = file.split("\\")
     plate = file_name[-1]

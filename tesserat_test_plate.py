@@ -8,7 +8,7 @@ pytesseract.pytesseract.tesseract_cmd = r"D:\studia\praca_dyplomowa\tesseract\te
 import glob
 import time
 
-folder_with_pic = glob.glob(r"D:\studia\praca_dyplomowa\pytorch_detect\yolov5\runs\detect\exp7\crops\LP\*")
+folder_with_pic = glob.glob(r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrole_tablice_1000\*")
 
 points = 0
 no_contur = 0
@@ -17,6 +17,16 @@ for file in folder_with_pic:
 
   start = time.time()
   img = cv2.imread(file)
+
+  # small preprocesing picture
+
+  img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+  # img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  # cv2.imshow('3',img)
+  # cv2.waitKey(0)
+
+
+
   try: 
 
     data = pytesseract.image_to_string(img, config='-c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789 --psm 8 --oem 3')

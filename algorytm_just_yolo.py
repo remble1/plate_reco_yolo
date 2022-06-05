@@ -1,11 +1,11 @@
 from detect import run
 import os
 
-plate_dir = r"D:\studia\praca_dyplomowa\pytorch_detect\yolov5\runs\detect\exp7\crops\LP"
+plate_dir = r"D:\studia\praca_dyplomowa\pytorch_detect\dane_pomiarowe\dane_kontrolne_1000"
 
 list = os.listdir(plate_dir) # dir is your directory path
 
-plates=run(source= plate_dir) #yolo engine
+plates=run(source = plate_dir) #yolo engine
 
 points = 0
 pic = len(list)

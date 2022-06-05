@@ -94,9 +94,9 @@ def process_batch(detections, labels, iouv):
 
 @torch.no_grad()
 def run(data,
-        weights=None,  # model.pt path(s)
+        weights=r"D:\carplate_element\model_S_5Kpic\last.pt",  # model.pt path(s)
         batch_size=32,  # batch size
-        imgsz=640,  # inference size (pixels)
+        imgsz=(640, 960),  # inference size (pixels)
         conf_thres=0.001,  # confidence threshold
         iou_thres=0.6,  # NMS IoU threshold
         task='val',  # train, val, test, speed or study
